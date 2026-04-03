@@ -6,55 +6,23 @@
     <title>BLVgramm Ultra Custom</title>
     
     <style>
-        /* Динамические переменные для кастомизации */
-        :root {
-            --primary: #0084ff;
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #1c1e21;
-            --radius: 15px;
-        }
-
-        body { 
-            font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; 
-            background: var(--bg); color: var(--text); overflow: hidden; transition: 0.3s;
-        }
-
-        /* Sidebar */
+        :root { --primary: #0084ff; --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21; --radius: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); color: var(--text); overflow: hidden; transition: 0.3s; }
         .sidebar { width: 260px; background: var(--card); border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; z-index: 10; }
         .logo { font-size: 24px; font-weight: 900; color: var(--primary); margin-bottom: 20px; text-align: center; }
-        .nav-btn { 
-            padding: 12px; margin: 4px 0; cursor: pointer; border-radius: var(--radius); 
-            border: none; background: none; font-weight: 600; text-align: left; transition: 0.2s;
-        }
-        .nav-btn:hover { background: rgba(0,0,0,0.05); }
+        .nav-btn { padding: 12px; margin: 4px 0; cursor: pointer; border-radius: var(--radius); border: none; background: none; font-weight: 600; text-align: left; transition: 0.2s; }
         .nav-btn.active { background: var(--primary); color: white; }
-
-        /* Контент */
-        .main-content { flex: 1; position: relative; background: transparent; overflow-y: auto; display: flex; justify-content: center; }
+        .main-content { flex: 1; overflow-y: auto; display: flex; justify-content: center; background: transparent; }
         .tab-content { display: none; width: 100%; max-width: 700px; padding: 20px; box-sizing: border-box; flex-direction: column; }
-        .tab-content.active { display: flex; animation: fadeIn 0.3s; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Элементы */
-        .card { background: var(--card); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
-        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #eee; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); margin-bottom: 10px; box-sizing: border-box; font-size: 15px; outline: none; }
-        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius); cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; }
-        .btn-main:active { transform: scale(0.98); }
-
-        /* Чат */
-        .chat-area { flex: 1; height: 350px; overflow-y: auto; background: rgba(0,0,0,0.02); padding: 15px; border-radius: var(--radius); display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; }
-        .msg { padding: 10px 15px; border-radius: var(--radius); max-width: 75%; line-height: 1.4; word-wrap: break-word; }
-        .msg.mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
-        .msg.other { align-self: flex-start; background: #e4e6eb; color: black; border-bottom-left-radius: 4px; }
-
-        .user-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: var(--radius); cursor: pointer; transition: 0.2s; }
-        .user-item:hover { background: rgba(0,0,0,0.05); }
-
-        /* Кастомизация */
-        .cust-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
-        .cust-row input[type="color"] { width: 50px; height: 50px; padding: 2px; cursor: pointer; }
+        .tab-content.active { display: flex; }
+        .card { background: var(--card); padding: 20px; border-radius: var(--radius); border: 1px solid rgba(0,0,0,0.05); margin-bottom: 15px; }
+        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); margin-bottom: 10px; outline: none; }
+        .btn-main { background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius); cursor: pointer; font-weight: bold; width: 100%; }
+        .chat-area { flex: 1; height: 400px; overflow-y: auto; background: rgba(0,0,0,0.02); padding: 15px; border-radius: var(--radius); display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 10px 15px; border-radius: var(--radius); max-width: 75%; }
+        .msg.mine { align-self: flex-end; background: var(--primary); color: white; }
+        .msg.other { align-self: flex-start; background: #e4e6eb; color: black; }
     </style>
 </head>
 <body>
@@ -66,72 +34,38 @@
         <button class="nav-btn" id="nb-users" onclick="showTab('users')">🔍 Люди</button>
         <button class="nav-btn" id="nb-cust" onclick="showTab('cust')">🎨 Тема</button>
         <button class="nav-btn" id="nb-prof" onclick="showTab('prof')">👤 Профиль</button>
-        <div style="margin-top:auto; font-size:10px; opacity:0.5; text-align:center;" id="myIdDisplay">ID: ...</div>
     </div>
 
     <div class="main-content">
-        <!-- ЛЕНТА -->
         <div id="tab-feed" class="tab-content active">
-            <div class="card">
-                <textarea id="postInput" placeholder="Что нового?"></textarea>
-                <button class="btn-main" onclick="publishPost()">Опубликовать</button>
-            </div>
+            <div class="card"><textarea id="postInput" placeholder="Что нового?"></textarea><button class="btn-main" onclick="publishPost()">Опубликовать</button></div>
             <div id="feedList"></div>
         </div>
 
-        <!-- СПИСОК ЧАТОВ -->
-        <div id="tab-messages" class="tab-content">
-            <h3>Ваши диалоги</h3>
-            <div id="dialogsList"></div>
-        </div>
+        <div id="tab-messages" class="tab-content"><h3>Ваши диалоги</h3><div id="dialogsList"></div></div>
+        <div id="tab-users" class="tab-content"><h3>Все пользователи</h3><div id="usersList"></div></div>
 
-        <!-- ПОИСК ЛЮДЕЙ -->
-        <div id="tab-users" class="tab-content">
-            <h3>Все пользователи</h3>
-            <div id="usersList"></div>
-        </div>
-
-        <!-- ЛИЧНЫЙ ЧАТ (СКРЫТЫЙ) -->
         <div id="tab-chat" class="tab-content">
-            <div class="card" style="display:flex; align-items:center; gap:10px;">
-                <button onclick="showTab('messages')" style="background:none; border:none; cursor:pointer; font-size:20px;">⬅</button>
-                <strong id="chatPartnerName">Чат</strong>
-            </div>
+            <div class="card" style="display:flex; align-items:center; gap:10px;"><button onclick="showTab('messages')" style="background:none; border:none; cursor:pointer;">⬅</button><strong id="chatPartnerName">...</strong></div>
             <div class="chat-area" id="chatArea"></div>
-            <div style="display:flex; gap:8px;">
-                <input type="text" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
-                <button class="btn-main" onclick="sendMessage()" style="width:60px;">➤</button>
-            </div>
+            <div style="display:flex; gap:8px;"><input type="text" id="chatInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMessage()"><button class="btn-main" onclick="sendMessage()" style="width:60px;">➤</button></div>
         </div>
 
-        <!-- КАСТОМИЗАЦИЯ -->
         <div id="tab-cust" class="tab-content">
             <div class="card">
-                <h3>🎨 Настройка стиля</h3>
-                <div class="cust-row">
-                    <span>Цвет темы:</span>
-                    <input type="color" id="custPrimary" onchange="applyCustomization()">
-                </div>
-                <div class="cust-row">
-                    <span>Цвет фона страницы:</span>
-                    <input type="color" id="custBg" onchange="applyCustomization()">
-                </div>
-                <div class="cust-row">
-                    <span>Скругление углов:</span>
-                    <input type="range" min="0" max="30" id="custRadius" onchange="applyCustomization()">
-                </div>
-                <button class="btn-main" onclick="resetCustomization()" style="background:#dc3545">Сбросить всё</button>
+                <h3>🎨 Кастомизация</h3>
+                <div>Цвет темы: <input type="color" id="custPrimary" onchange="applyCustomization()"></div>
+                <div style="margin-top:10px;">Скругление: <input type="range" min="0" max="30" id="custRadius" onchange="applyCustomization()"></div>
+                <button class="btn-main" onclick="resetCustomization()" style="margin-top:15px; background:#dc3545">Сбросить</button>
             </div>
         </div>
 
-        <!-- ПРОФИЛЬ -->
         <div id="tab-prof" class="tab-content">
             <div class="card" style="text-align:center;">
-                <img id="pPreview" src="" class="avatar" style="width:100px; height:100px; margin: 0 auto 15px;">
-                <h2 id="pNameDisplay">Аноним</h2>
-                <input type="text" id="pNickInput" placeholder="Изменить ник">
-                <input type="text" id="pAvInput" placeholder="URL аватарки">
-                <button class="btn-main" onclick="updateProfile()">Сохранить изменения</button>
+                <img id="pPreview" src="" class="avatar" style="width:100px; height:100px;">
+                <h2 id="pNameDisplay">...</h2>
+                <input type="text" id="pNickInput" placeholder="Ник"><input type="text" id="pAvInput" placeholder="URL аватара">
+                <button class="btn-main" onclick="updateProfile()">Сохранить</button>
             </div>
         </div>
     </div>
@@ -145,158 +79,95 @@
             authDomain: "://firebaseapp.com",
             databaseURL: "https://firebasedatabase.app",
             projectId: "blvgramm",
-            storageBucket: "blvgramm.firebasestorage.app",
             appId: "1:441925060827:web:07585974cd7427db98e4fe"
         };
 
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // --- ДАННЫЕ ЮЗЕРА ---
-        let myId = localStorage.getItem('blv_uid') || 'u' + Math.floor(Math.random()*1000000);
+        let myId = localStorage.getItem('blv_uid') || 'u' + Date.now();
         localStorage.setItem('blv_uid', myId);
-        document.getElementById('myIdDisplay').innerText = "Твой ID: " + myId;
 
-        let me = JSON.parse(localStorage.getItem('blv_user')) || {
-            nick: 'User' + Math.floor(Math.random()*999),
-            av: 'https://flaticon.com'
-        };
+        let me = JSON.parse(localStorage.getItem('blv_user')) || { nick: 'User'+Math.floor(Math.random()*999), av: 'https://flaticon.com' };
+        set(ref(db, 'users/' + myId), { id: myId, nick: me.nick, av: me.av });
 
-        // Регистрация в БД
-        const sync = () => set(ref(db, 'users/' + myId), { id: myId, nick: me.nick, av: me.av });
-        sync();
-
-        // --- НАВИГАЦИЯ ---
-        window.showTab = (tabId) => {
+        window.showTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('tab-' + tabId).classList.add('active');
-            const btn = document.getElementById('nb-' + tabId);
-            if(btn) btn.classList.add('active');
+            document.getElementById('tab-' + id).classList.add('active');
+            if(document.getElementById('nb-'+id)) document.getElementById('nb-'+id).classList.add('active');
         };
 
-        // --- КАСТОМИЗАЦИЯ ---
-        let config = JSON.parse(localStorage.getItem('blv_cust')) || { primary: '#0084ff', bg: '#f0f2f5', radius: '15' };
-        
         window.applyCustomization = () => {
-            config.primary = document.getElementById('custPrimary').value;
-            config.bg = document.getElementById('custBg').value;
-            config.radius = document.getElementById('custRadius').value + 'px';
-            
-            document.documentElement.style.setProperty('--primary', config.primary);
-            document.documentElement.style.setProperty('--bg', config.bg);
-            document.documentElement.style.setProperty('--radius', config.radius);
-            
-            localStorage.setItem('blv_cust', JSON.stringify(config));
+            const p = document.getElementById('custPrimary').value;
+            const r = document.getElementById('custRadius').value + 'px';
+            document.documentElement.style.setProperty('--primary', p);
+            document.documentElement.style.setProperty('--radius', r);
+            localStorage.setItem('blv_cust', JSON.stringify({primary: p, radius: r}));
         };
 
-        window.resetCustomization = () => {
-            localStorage.removeItem('blv_cust');
-            location.reload();
-        };
-
-        // Загрузка настроек при старте
-        document.getElementById('custPrimary').value = config.primary;
-        document.getElementById('custBg').value = config.bg;
-        document.getElementById('custRadius').value = parseInt(config.radius);
-        applyCustomization();
-
-        // --- ПРОФИЛЬ ---
-        document.getElementById('pNameDisplay').innerText = me.nick;
-        document.getElementById('pPreview').src = me.av;
         window.updateProfile = () => {
             const n = document.getElementById('pNickInput').value;
             const a = document.getElementById('pAvInput').value;
             if(n) me.nick = n; if(a) me.av = a;
             localStorage.setItem('blv_user', JSON.stringify(me));
-            sync();
             location.reload();
         };
 
-        // --- ЛЕНТА ---
         window.publishPost = () => {
             const t = document.getElementById('postInput').value;
             if(!t.trim()) return;
-            push(ref(db, 'posts'), { n: me.nick, av: me.av, t: t, time: Date.now() });
+            push(ref(db, 'posts'), { n: me.nick, av: me.av, t: t });
             document.getElementById('postInput').value = '';
         };
 
         onChildAdded(ref(db, 'posts'), (s) => {
             const p = s.val();
-            const h = `<div class="card">
-                <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
-                    <img src="${p.av}" class="avatar" style="width:35px;height:35px;">
-                    <strong>${p.n}</strong>
-                </div>
-                <div>${p.t}</div>
-            </div>`;
+            const h = `<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><img src="${p.av}" class="avatar" style="width:35px;height:35px;"><strong>${p.n}</strong></div><div>${p.t}</div></div>`;
             document.getElementById('feedList').insertAdjacentHTML('afterbegin', h);
         });
 
-        // --- ПОИСК ЛЮДЕЙ ---
         onValue(ref(db, 'users'), (snap) => {
-            const list = document.getElementById('usersList');
-            list.innerHTML = '';
+            const list = document.getElementById('usersList'); list.innerHTML = '';
             snap.forEach(c => {
-                const u = c.val();
-                if(u.id === myId) return;
-                const div = document.createElement('div');
-                div.className = 'user-item card';
-                div.innerHTML = `<img src="${u.av}" class="avatar"> <strong>${u.nick}</strong>`;
-                div.onclick = () => openChat(u);
-                list.appendChild(div);
+                const u = c.val(); if(u.id === myId) return;
+                const div = document.createElement('div'); div.className = 'card'; div.style.cursor = 'pointer';
+                div.innerHTML = `<img src="${u.av}" class="avatar" style="width:30px;height:30px;"> ${u.nick}`;
+                div.onclick = () => openChat(u); list.appendChild(div);
             });
         });
 
-        // --- ЛИЧНЫЕ СООБЩЕНИЯ ---
         let activePartner = null;
-
-        window.openChat = (user) => {
-            activePartner = user;
-            document.getElementById('chatPartnerName').innerText = user.nick;
-            document.getElementById('chatArea').innerHTML = '';
-            showTab('chat');
-            
-            const chatId = [myId, user.id].sort().join('_');
-            onChildAdded(ref(db, 'chats/' + chatId), (s) => {
-                const m = s.val();
-                const d = document.createElement('div');
-                d.className = `msg ${m.f === myId ? 'mine' : 'other'}`;
-                d.innerText = m.t;
+        window.openChat = (u) => {
+            activePartner = u; document.getElementById('chatPartnerName').innerText = u.nick;
+            document.getElementById('chatArea').innerHTML = ''; showTab('chat');
+            const cid = [myId, u.id].sort().join('_');
+            onChildAdded(ref(db, 'chats/' + cid), (s) => {
+                const m = s.val(); const d = document.createElement('div');
+                d.className = `msg ${m.f === myId ? 'mine' : 'other'}`; d.innerText = m.t;
                 document.getElementById('chatArea').appendChild(d);
                 document.getElementById('chatArea').scrollTop = 9999;
             });
-
-            // Добавляем в список диалогов
-            set(ref(db, `dialogs/${myId}/${user.id}`), user);
-            set(ref(db, `dialogs/${user.id}/${myId}`), {id: myId, nick: me.nick, av: me.av});
+            set(ref(db, `dialogs/${myId}/${u.id}`), u);
         };
 
         window.sendMessage = () => {
-            const i = document.getElementById('chatInput');
-            if(!i.value.trim() || !activePartner) return;
-            const chatId = [myId, activePartner.id].sort().join('_');
-            push(ref(db, 'chats/' + chatId), { f: myId, t: i.value });
-            i.value = '';
+            const i = document.getElementById('chatInput'); if(!i.value.trim() || !activePartner) return;
+            const cid = [myId, activePartner.id].sort().join('_');
+            push(ref(db, 'chats/' + cid), { f: myId, t: i.value }); i.value = '';
         };
 
-        // --- ВКЛАДКА СООБЩЕНИЯ (ДИАЛОГИ) ---
         onValue(ref(db, `dialogs/${myId}`), (snap) => {
-            const list = document.getElementById('dialogsList');
-            list.innerHTML = '';
-            if(!snap.exists()) list.innerHTML = '<p style="opacity:0.5">У вас пока нет активных чатов</p>';
+            const list = document.getElementById('dialogsList'); list.innerHTML = '';
             snap.forEach(c => {
-                const u = c.val();
-                const div = document.createElement('div');
-                div.className = 'user-item card';
-                div.innerHTML = `<img src="${u.av}" class="avatar"> <div><strong>${u.nick}</strong><br><small>Нажмите, чтобы продолжить чат</small></div>`;
-                div.onclick = () => openChat(u);
+                const u = c.val(); const div = document.createElement('div'); div.className = 'card'; div.style.cursor = 'pointer';
+                div.innerHTML = `Чат с <strong>${u.nick}</strong>`; div.onclick = () => openChat(u);
                 list.appendChild(div);
             });
         });
 
-        // Запрос уведомлений
-        if(Notification.permission !== 'granted') Notification.requestPermission();
+        document.getElementById('pNameDisplay').innerText = me.nick;
+        document.getElementById('pPreview').src = me.av;
     </script>
 </body>
 </html>
