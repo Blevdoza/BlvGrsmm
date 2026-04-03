@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BLVgramm Ultra Custom</title>
+    <style id="customStyles">
+        /* Динамические стили будут управляться через JS */
+        :root {
+            --primary: #0084ff; --bg: #f0f2f5; --card: #ffffff; 
+            --text: #1c1e21; --radius: 12px; --font-size: 16px;
+            --bg-image: none;
+        }
+    </style>
+    <style>
+        body { 
+            font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; 
+            background: var(--bg); background-image: var(--bg-image); background-size: cover;
+            color: var(--text); font-size: var(--font-size); transition: 0.3s; 
+        }
+        
+        .sidebar { width: 280px; background: var(--card); border-right: 1px solid rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; z-index: 10; }
+        .logo { font-size: 24px; font-weight: 800; color: var(--primary); margin-bottom: 30px; text-align: center; }
+        
+        .nav-btn { 
+            padding: 14px; margin: 4px 0; cursor: pointer; border-radius: var(--radius); 
+            font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.2s; 
+        }
+        .nav-btn:hover { background: rgba(0,0,0,0.05); }
+        .nav-btn.active { background: var(--primary); color: white; }
+
+        .main-content { flex: 1; padding: 25px; overflow-y: auto; display: flex; justify-content: center; position: relative; }
+        .tab-content { display: none; width: 100%; max-width: 700px; animation: fadeIn 0.3s; }
+        .active-tab { display: block; }
+
+        .card { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        
+        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        
+        /* ЧАТЫ */
+        .chat-item { display: flex; align-items: center; gap: 15px; padding: 12px; border-radius: var(--radius); cursor: pointer; margin-bottom: 5px; }
+        .chat-item:hover { background: rgba(0,0,0,0.03); }
+        
+        .messages-area { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.02); border-radius: var(--radius); }
+        .bubble { padding: 10px 16px; border-radius: var(--radius); max-width: 75%; word-wrap: break-word; }
+        .bubble.mine { align-self: flex-end; background: var(--primary); color: white; }
+        .bubble.other { align-self: flex-start; background: var(--card); border: 1px solid rgba(0,0,0,0.1); }
+
+        input, textarea, select { 
+            width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); 
+            margin-bottom: 10px; background: var(--card); color: var(--text); box-sizing: border-box;
+        }
+        button { 
+            background: var(--primary); color: white; border: none; padding: 12px; 
+            border-radius: var(--radius); cursor: pointer; font-weight: bold; width: 100%; 
+        }
+
+        #adminTabBtn { display: none; background: #6f42c1; color: white; margin-top: auto; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body id="mainBody">
+
+    <div class="sidebar">
+        <div class="logo">BLVgramm Ultra</div>
+        <div class="nav-btn active" onclick="switchTab('feed', this)">🏠 Лента</div>
+        <div class="nav-btn" onclick="switchTab('chats', this)">💬 Мессенджер</div>
+        <div class="nav-btn" onclick="switchTab('custom', this)">🎨 Кастомизация</div>
+        <div class="nav-btn" onclick="switchTab('profile', this)">👤 Профиль</div>
+        <div class="nav-btn" id="adminTabBtn" onclick="switchTab('admin', this)">👑 Админка</div>
+    </div>
+
+    <div class="main-content">
+        <!-- ЛЕНТА -->
+        <div id="tab-feed" class="tab-content active-tab">
+            <div class="card">
+                <textarea id="postText" placeholder="Напиши что-нибудь..."></textarea>
+                <button onclick="createPost()">Опубликовать</button>
+            </div>
+            <div id="feedContainer"></div>
+        </div>
+
+        <!-- МЕССЕНДЖЕР -->
+        <div id="tab-chats" class="tab-content">
+            <div class="card" id="chatListContainer">
+                <h3>Диалоги</h3>
+                <div class="chat-item" onclick="openChat('AI_Bot')">🤖 <b>ИИ Помощник</b></div>
+                <div class="chat-item" onclick="openChat('Blevdoza')">🕶️ <b>Blevdoza</b></div>
+            </div>
+            <div class="card" id="activeChatContainer" style="display:none;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
+                    <button onclick="closeChat()" style="width:auto;">← Назад</button>
+                    <b id="chatTitle">Чат</b>
+                </div>
+                <div class="messages-area" id="msgArea"></div>
+                <div style="display:flex; gap:5px; margin-top:10px;">
+                    <input type="text" id="msgInput" placeholder="Сообщение...">
+                    <button onclick="sendMsg()" style="width:60px;">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- КАСТОМИЗАЦИЯ -->
+        <div id="tab-custom" class="tab-content">
+            <div class="card">
+                <h3>Дизайн приложения</h3>
+                <label>Основной цвет кнопок:</label>
+                <input type="color" id="colorPicker" onchange="applyCustom()">
+                
+                <label>Округление углов (пиксели):</label>
+                <input type="range" min="0" max="30" id="radiusPicker" onchange="applyCustom()">
+                
+                <label>Размер текста:</label>
+                <input type="range" min="12" max="22" id="fontPicker" onchange="applyCustom()">
+
+                <label>Фоновая картинка (URL):</label>
+                <input type="text" id="bgImgPicker" placeholder="https://..." onchange="applyCustom()">
+                
+                <button onclick="resetCustom()" style="background:#888; margin-top:10px;">Сбросить дизайн</button>
+            </div>
+        </div>
+
+        <!-- ПРОФИЛЬ -->
+        <div id="tab-profile" class="tab-content">
+            <div class="card" style="text-align:center;">
+                <img id="profilePreview" src="" class="avatar" style="width:80px; height:80px;">
+                <h2 id="namePreview">Пользователь</h2>
+                <input type="text" id="editNick" placeholder="Никнейм">
+                <input type="text" id="editAv" placeholder="Ссылка на фото">
+                <input type="password" id="adminPass" placeholder="Пароль админа">
+                <button onclick="saveProfile()">Сохранить профиль</button>
+            </div>
+        </div>
+
+        <!-- АДМИНКА -->
+        <div id="tab-admin" class="tab-content">
+            <div class="card">
+                <h3>👑 Функции BLEVDOZA</h3>
+                <button onclick="clearLocalStorage()" class="reset-btn" style="background:#ff4d4d;">⚠️ Полный сброс всех данных</button>
+                <hr>
+                <label>Написать в чат от Blevdoza:</label>
+                <textarea id="adminFakeMsg"></textarea>
+                <button onclick="fakeReply()">Отправить как Blevdoza</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ДАННЫЕ
+        let state = JSON.parse(localStorage.getItem('blv_state')) || {
+            user: { nick: 'Аноним', av: 'https://flaticon.com', isAdmin: false },
+            config: { color: '#0084ff', radius: '12px', font: '16px', bg: '' },
+            posts: [],
+            chats: { AI_Bot: [], Blevdoza: [] }
+        };
+
+        let currentChatId = null;
+
+        // ИНИЦИАЛИЗАЦИЯ
+        function init() {
+            applyCustom(true);
+            renderFeed();
+            document.getElementById('profilePreview').src = state.user.av;
+            document.getElementById('namePreview').innerText = state.user.nick;
+            if(state.user.isAdmin) document.getElementById('adminTabBtn').style.display = 'flex';
+        }
+
+        function saveState() { localStorage.setItem('blv_state', JSON.stringify(state)); }
+
+        // ПЕРЕКЛЮЧЕНИЕ ВКЛАДОК
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active-tab');
+            btn.classList.add('active');
+        }
+
+        // КАСТОМИЗАЦИЯ
+        function applyCustom(isInit = false) {
+            if(!isInit) {
+                state.config.color = document.getElementById('colorPicker').value;
+                state.config.radius = document.getElementById('radiusPicker').value + 'px';
+                state.config.font = document.getElementById('fontPicker').value + 'px';
+                state.config.bg = document.getElementById('bgImgPicker').value;
+                saveState();
+            }
+            const root = document.documentElement.style;
+            root.setProperty('--primary', state.config.color);
+            root.setProperty('--radius', state.config.radius);
+            root.setProperty('--font-size', state.config.font);
+            root.setProperty('--bg-image', state.config.bg ? `url(${state.config.bg})` : 'none');
+        }
+
+        function resetCustom() {
+            state.config = { color: '#0084ff', radius: '12px', font: '16px', bg: '' };
+            saveState();
+            location.reload();
+        }
+
+        // ПРОФИЛЬ
+        function saveProfile() {
+            state.user.nick = document.getElementById('editNick').value || state.user.nick;
+            state.user.av = document.getElementById('editAv').value || state.user.av;
+            if(document.getElementById('adminPass').value === "BLEVDOZA2004") {
+                state.user.isAdmin = true;
+                document.getElementById('adminTabBtn').style.display = 'flex';
+            }
+            saveState();
+            init();
+            alert("Сохранено!");
+        }
+
+        // ЛЕНТА
+        function createPost() {
+            const txt = document.getElementById('postText').value;
+            if(!txt.trim()) return;
+            state.posts.unshift({ nick: state.user.nick, av: state.user.av, text: txt });
+            document.getElementById('postText').value = '';
+            saveState();
+            renderFeed();
+        }
+
+        function renderFeed() {
+            document.getElementById('feedContainer').innerHTML = state.posts.map(p => `
+                <div class="card">
+                    <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+                        <img src="${p.av}" class="avatar"> <b>${p.nick}</b>
+                    </div>
+                    <div>${p.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // МЕССЕНДЖЕР
+        function openChat(id) {
+            currentChatId = id;
+            document.getElementById('chatListContainer').style.display = 'none';
+            document.getElementById('activeChatContainer').style.display = 'block';
+            document.getElementById('chatTitle').innerText = id;
+            renderMessages();
+        }
+
+        function closeChat() {
+            document.getElementById('chatListContainer').style.display = 'block';
+            document.getElementById('activeChatContainer').style.display = 'none';
+        }
+
+        function sendMsg() {
+            const inp = document.getElementById('msgInput');
+            if(!inp.value.trim()) return;
+            state.chats[currentChatId].push({ type: 'mine', text: inp.value });
+            
+            if(currentChatId === 'AI_Bot') {
+                setTimeout(() => {
+                    state.chats.AI_Bot.push({ type: 'other', text: "Я запомнил твои слова: " + inp.value });
+                    saveState();
+                    renderMessages();
+                }, 1000);
+            }
+            inp.value = '';
+            saveState();
+            renderMessages();
+        }
+
+        function renderMessages() {
+            const area = document.getElementById('msgArea');
+            area.innerHTML = state.chats[currentChatId].map(m => `
+                <div class="bubble ${m.type}">${m.text}</div>
+            `).join('');
+            area.scrollTop = area.scrollHeight;
+        }
+
+        // АДМИНКА
+        function fakeReply() {
+            const txt = document.getElementById('adminFakeMsg').value;
+            if(!txt || !currentChatId) return alert("Открой нужный чат!");
+            state.chats[currentChatId].push({ type: 'other', text: "🕶️ Blevdoza: " + txt });
+            saveState();
+            renderMessages();
+            document.getElementById('adminFakeMsg').value = '';
+        }
+
+        function clearLocalStorage() { if(confirm("Сбросить всё?")) { localStorage.clear(); location.reload(); } }
+
+        init();
+    </script>
+</body>
+</html>
