@@ -3,202 +3,299 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLVgramm Pro</title>
+    <title>BLVgramm Pro Max</title>
     
-    <!-- Библиотеки Firebase -->
+    <!-- Подключение Firebase -->
     <script src="https://gstatic.com"></script>
     <script src="https://gstatic.com"></script>
 
-    <style id="dynamicStyles">
+    <style id="themeVars">
         :root {
             --primary: #0084ff; --bg: #f0f2f5; --card: #ffffff; 
-            --text: #1c1e21; --radius: 15px; --font: 16px;
-            --bg-img: none;
+            --text: #1c1e21; --radius: 20px; --font: 16px;
+            --glass: rgba(255, 255, 255, 0.9); --blur: 0px;
         }
     </style>
     <style>
+        * { box-sizing: border-box; transition: 0.3s ease; }
         body { 
-            font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; 
-            background: var(--bg); background-image: var(--bg-img); background-size: cover;
-            color: var(--text); font-size: var(--font); transition: 0.3s; overflow: hidden;
+            font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; display: flex; height: 100vh; 
+            background: var(--bg); background-size: cover; background-position: center;
+            color: var(--text); font-size: var(--font); overflow: hidden;
         }
-        .sidebar { width: 260px; background: var(--card); border-right: 1px solid rgba(0,0,0,0.1); padding: 20px; display: flex; flex-direction: column; }
-        .logo { font-size: 26px; font-weight: 800; color: var(--primary); margin-bottom: 30px; text-align: center; }
-        .nav-btn { padding: 14px; margin: 4px 0; cursor: pointer; border-radius: var(--radius); font-weight: 600; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
-        .nav-btn:hover { background: rgba(0,0,0,0.05); }
-        .nav-btn.active { background: var(--primary); color: white; }
-        .main-content { flex: 1; padding: 25px; overflow-y: auto; display: flex; justify-content: center; }
-        .tab-content { display: none; width: 100%; max-width: 700px; animation: fadeIn 0.3s; }
+        
+        /* Стеклянный SideBar */
+        .sidebar { 
+            width: 280px; background: var(--glass); backdrop-filter: blur(var(--blur));
+            border-right: 1px solid rgba(0,0,0,0.1); padding: 25px; display: flex; flex-direction: column; 
+        }
+        .logo { font-size: 28px; font-weight: 900; color: var(--primary); margin-bottom: 30px; letter-spacing: -1px; }
+        
+        .nav-btn { 
+            padding: 15px; margin: 5px 0; cursor: pointer; border-radius: var(--radius); 
+            font-weight: 600; display: flex; align-items: center; gap: 12px; border: none; background: none; color: inherit;
+        }
+        .nav-btn:hover { background: rgba(0,0,0,0.05); transform: translateX(5px); }
+        .nav-btn.active { background: var(--primary); color: white; box-shadow: 0 10px 20px rgba(0,132,255,0.3); }
+
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; justify-content: center; }
+        .tab-content { display: none; width: 100%; max-width: 750px; animation: fadeIn 0.4s; }
         .active-tab { display: block; }
-        .card { background: var(--card); padding: 20px; border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .avatar { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
-        .msg-area { height: 400px; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 10px; background: rgba(0,0,0,0.03); border-radius: var(--radius); margin-bottom: 10px; }
-        .bubble { padding: 10px 15px; border-radius: var(--radius); max-width: 75%; position: relative; }
-        .bubble.mine { align-self: flex-end; background: var(--primary); color: white; }
-        .bubble.other { align-self: flex-start; background: var(--card); border: 1px solid #ddd; }
-        input, textarea, select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: var(--radius); margin-bottom: 10px; background: var(--card); color: var(--text); box-sizing: border-box; outline: none; }
-        button { background: var(--primary); color: white; border: none; padding: 12px; border-radius: var(--radius); cursor: pointer; font-weight: bold; width: 100%; transition: 0.2s; }
-        #adminTabBtn { display: none; background: #6f42c1; color: white; margin-top: auto; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Карточки */
+        .card { background: var(--glass); backdrop-filter: blur(var(--blur)); padding: 25px; border-radius: var(--radius); box-shadow: 0 8px 30px rgba(0,0,0,0.05); margin-bottom: 25px; }
+        
+        .avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--primary); }
+        
+        /* Чат */
+        .chat-area { height: 450px; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; background: rgba(0,0,0,0.02); border-radius: var(--radius); margin-bottom: 15px; }
+        .bubble { padding: 12px 18px; border-radius: var(--radius); max-width: 80%; line-height: 1.4; position: relative; }
+        .bubble.mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        .bubble.other { align-self: flex-start; background: var(--card); border-bottom-left-radius: 4px; }
+
+        input, textarea, select { 
+            width: 100%; padding: 14px; border: 1px solid rgba(0,0,0,0.1); border-radius: 12px; 
+            margin-bottom: 15px; background: var(--card); color: var(--text); outline: none;
+        }
+        button { 
+            background: var(--primary); color: white; border: none; padding: 14px; 
+            border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%;
+        }
+        button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+        .search-item { display: flex; align-items: center; gap: 15px; padding: 10px; border-radius: 12px; cursor: pointer; }
+        .search-item:hover { background: var(--accent); }
+
+        #adminTabBtn { display: none; background: linear-gradient(45deg, #6f42c1, #a020f0); color: white; margin-top: auto; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
     </style>
 </head>
 <body>
 
-<div class="sidebar">
-    <div class="logo">BLVgramm</div>
-    <div class="nav-btn active" onclick="switchTab('feed', this)">🏠 Лента</div>
-    <div class="nav-btn" onclick="switchTab('chats', this)">💬 Чаты</div>
-    <div class="nav-btn" onclick="switchTab('custom', this)">🎨 Дизайн</div>
-    <div class="nav-btn" onclick="switchTab('profile', this)">👤 Профиль</div>
-    <div class="nav-btn" id="adminTabBtn" onclick="switchTab('admin', this)">👑 Админка</div>
-</div>
-
-<div class="main-content">
-    <div id="tab-feed" class="tab-content active-tab">
-        <div class="card"><textarea id="postText" placeholder="Что нового?"></textarea><button onclick="createPost()">Поделиться</button></div>
-        <div id="feedList"></div>
+    <div class="sidebar">
+        <div class="logo">BLVgramm</div>
+        <button class="nav-btn active" onclick="switchTab('feed', this)">🏠 Лента</button>
+        <button class="nav-btn" onclick="switchTab('chats', this)">💬 Чаты</button>
+        <button class="nav-btn" onclick="switchTab('people', this)">🔍 Люди</button>
+        <button class="nav-btn" onclick="switchTab('custom', this)">🎨 Дизайн</button>
+        <button class="nav-btn" onclick="switchTab('profile', this)">👤 Профиль</button>
+        <button class="nav-btn" id="adminTabBtn" onclick="switchTab('admin', this)">👑 Админка</button>
     </div>
 
-    <div id="tab-chats" class="tab-content">
-        <div class="card">
-            <h3 id="chatTitle">🌍 Общий чат</h3>
-            <div class="msg-area" id="msgArea"></div>
-            <div style="display:flex; gap:5px;"><input type="text" id="msgInput" placeholder="Сообщение..."><button onclick="sendMsg()" style="width:60px;">➤</button></div>
+    <div class="main-content">
+        <!-- ЛЕНТА -->
+        <div id="tab-feed" class="tab-content active-tab">
+            <div class="card">
+                <textarea id="postText" placeholder="Напиши что-нибудь крутое..."></textarea>
+                <button onclick="createPost()">Опубликовать в ленту</button>
+            </div>
+            <div id="feedContainer"></div>
+        </div>
+
+        <!-- ЧАТЫ -->
+        <div id="tab-chats" class="tab-content">
+            <div class="card">
+                <h3 id="activeChatTitle">🌍 Глобальный чат</h3>
+                <div class="chat-area" id="msgArea"></div>
+                <div style="display:flex; gap:10px;">
+                    <input type="text" id="msgInput" placeholder="Сообщение..." onkeypress="if(event.key==='Enter') sendMsg()">
+                    <button onclick="sendMsg()" style="width:70px;">➤</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ПОИСК ЛЮДЕЙ -->
+        <div id="tab-people" class="tab-content">
+            <div class="card">
+                <h3>🔍 Поиск пользователей</h3>
+                <input type="text" id="searchInput" placeholder="Введите ник..." oninput="searchUsers()">
+                <div id="userResults"></div>
+            </div>
+        </div>
+
+        <!-- КАСТОМИЗАЦИЯ -->
+        <div id="tab-custom" class="tab-content">
+            <div class="card">
+                <h3>🎨 Твой уникальный стиль</h3>
+                <label>Основной цвет:</label>
+                <input type="color" id="vColor" onchange="updateDesign()">
+                <label>Округление углов:</label>
+                <input type="range" min="0" max="40" id="vRadius" onchange="updateDesign()">
+                <label>Эффект стекла (размытие):</label>
+                <input type="range" min="0" max="20" id="vBlur" onchange="updateDesign()">
+                <label>Фоновое изображение (URL):</label>
+                <input type="text" id="vBg" placeholder="https://..." onchange="updateDesign()">
+                <button onclick="resetDesign()" style="background:#666; margin-top:10px;">Сбросить до заводских</button>
+            </div>
+        </div>
+
+        <!-- ПРОФИЛЬ -->
+        <div id="tab-profile" class="tab-content">
+            <div class="card" style="text-align:center;">
+                <img id="pAv" src="https://flaticon.com" class="avatar" style="width:100px; height:100px; margin-bottom:15px;">
+                <h2 id="pNick">Загрузка...</h2>
+                <input type="text" id="eNick" placeholder="Новый ник">
+                <input type="text" id="eAv" placeholder="Ссылка на аватарку">
+                <input type="password" id="ePass" placeholder="Код администратора">
+                <button onclick="saveProfile()" style="background:#28a745">Сохранить изменения</button>
+            </div>
+        </div>
+
+        <!-- АДМИНКА -->
+        <div id="tab-admin" class="tab-content">
+            <div class="card" style="border: 2px solid #6f42c1;">
+                <h3 style="color:#6f42c1">👑 ПАНЕЛЬ УПРАВЛЕНИЯ BLEVDOZA</h3>
+                <button onclick="clearAllPosts()" style="background:#ff4d4d; margin-bottom:10px;">🗑️ Очистить всю ленту</button>
+                <textarea id="adminAlert" placeholder="Глобальное сообщение от Системы..."></textarea>
+                <button onclick="sendGlobalAlert()" style="background:#6f42c1;">Разослать всем</button>
+            </div>
         </div>
     </div>
 
-    <div id="tab-custom" class="tab-content">
-        <div class="card">
-            <h3>🎨 Кастомизация</h3>
-            <label>Цвет кнопок:</label><input type="color" id="cColor" onchange="applyDesign()">
-            <label>Углы (0-30px):</label><input type="range" min="0" max="30" id="cRadius" onchange="applyDesign()">
-            <label>Шрифт (12-22px):</label><input type="range" min="12" max="22" id="cFont" onchange="applyDesign()">
-            <label>Фон (URL фото):</label><input type="text" id="cBg" placeholder="https://..." onchange="applyDesign()">
-            <button onclick="resetDesign()" style="background:#888; margin-top:10px;">Сбросить всё</button>
-        </div>
-    </div>
+    <script>
+        // --- КОНФИГУРАЦИЯ FIREBASE ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyC9ncz649ddqf5nwh-lsXXRqSVu9t2Dpmk",
+            authDomain: "://firebaseapp.com",
+            projectId: "blvgramm",
+            storageBucket: "blvgramm.firebasestorage.app",
+            messagingSenderId: "441925060827",
+            appId: "1:441925060827:web:07585974cd7427db98e4fe",
+            databaseURL: "https://firebasedatabase.app" 
+        };
 
-    <div id="tab-profile" class="tab-content">
-        <div class="card" style="text-align:center;">
-            <img id="pAv" src="https://flaticon.com" class="avatar" style="width:80px; height:80px; margin-bottom:10px;">
-            <h2 id="pNick">Аноним</h2>
-            <input type="text" id="eNick" placeholder="Никнейм">
-            <input type="text" id="eAv" placeholder="Ссылка на фото (URL)">
-            <input type="password" id="ePass" placeholder="Код BLEVDOZA">
-            <button onclick="saveProfile()">Сохранить</button>
-        </div>
-    </div>
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    <div id="tab-admin" class="tab-content">
-        <div class="card" style="border: 2px solid #6f42c1;">
-            <h3 style="color:#6f42c1">👑 BLEVDOZA ADMIN</h3>
-            <button onclick="clearChat()" style="background:#ff4d4d; margin-bottom:10px;">Очистить весь чат</button>
-            <textarea id="adminMsg" placeholder="От имени Blevdoza..."></textarea>
-            <button onclick="sendAdmin()" style="background:#6f42c1;">Отправить</button>
-        </div>
-    </div>
-</div>
+        let user = JSON.parse(localStorage.getItem('blv_u')) || { 
+            nick: 'Аноним_' + Math.floor(Math.random()*999), 
+            av: 'https://flaticon.com', 
+            isAdmin: false,
+            theme: { c: '#0084ff', r: '20px', f: '16px', b: '', bl: '0px' }
+        };
 
-<script>
-    // --- ДАННЫЕ FIREBASE ---
-    const firebaseConfig = {
-        apiKey: "AIzaSyC9ncz649ddqf5nwh-lsXXRqSVu9t2Dpmk",
-        authDomain: "://firebaseapp.com",
-        projectId: "blvgramm",
-        storageBucket: "blvgramm.firebasestorage.app",
-        messagingSenderId: "441925060827",
-        appId: "1:441925060827:web:07585974cd7427db98e4fe",
-        databaseURL: "https://firebasedatabase.app"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
+        function switchTab(id, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('tab-' + id).classList.add('active-tab');
+            if(btn) btn.classList.add('active');
+        }
 
-    let user = JSON.parse(localStorage.getItem('blv_u')) || { 
-        nick: 'Аноним', av: 'https://flaticon.com', isAdmin: false,
-        theme: { c: '#0084ff', r: '15px', f: '16px', b: '' }
-    };
+        // --- ОНЛАЙН ЧАТ ---
+        function sendMsg() {
+            const i = document.getElementById('msgInput');
+            if(!i.value.trim()) return;
+            db.ref('global_chat').push({ n: user.nick, a: user.av, t: i.value, time: Date.now() });
+            i.value = '';
+        }
 
-    function switchTab(id, btn) {
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active-tab'));
-        document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('tab-' + id).classList.add('active-tab');
-        btn.classList.add('active');
-    }
-
-    // --- ОНЛАЙН ЧАТ ---
-    function sendMsg() {
-        const i = document.getElementById('msgInput');
-        if(!i.value.trim()) return;
-        db.ref('messages').push({ n: user.nick, a: user.av, t: i.value, time: Date.now() });
-        i.value = '';
-    }
-
-    db.ref('messages').limitToLast(50).on('child_added', (s) => {
-        const m = s.val();
-        const area = document.getElementById('msgArea');
-        const type = (m.n === user.nick) ? 'mine' : 'other';
-        area.innerHTML += `<div class="bubble ${type}"><img src="${m.a}" style="width:20px;height:20px;border-radius:50%"> <b>${m.n}:</b><br>${m.t}</div>`;
-        area.scrollTop = area.scrollHeight;
-    });
-
-    // --- ОНЛАЙН ЛЕНТА ---
-    function createPost() {
-        const t = document.getElementById('postText').value;
-        if(!t.trim()) return;
-        db.ref('posts').push({ n: user.nick, a: user.av, t: t });
-        document.getElementById('postText').value = '';
-    }
-
-    db.ref('posts').on('value', (s) => {
-        const list = document.getElementById('feedList');
-        list.innerHTML = '';
-        const data = s.val();
-        if(data) Object.values(data).reverse().forEach(p => {
-            list.innerHTML += `<div class="card"><div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;"><img src="${p.a}" class="avatar"><b>${p.n}</b></div><div>${p.t}</div></div>`;
+        db.ref('global_chat').limitToLast(50).on('child_added', (s) => {
+            const m = s.val();
+            const area = document.getElementById('msgArea');
+            const type = (m.n === user.nick) ? 'mine' : 'other';
+            area.innerHTML += `<div class="bubble ${type}">
+                <div style="font-size:10px; opacity:0.6; margin-bottom:4px;">${m.n}</div>
+                ${m.t}
+            </div>`;
+            area.scrollTop = area.scrollHeight;
         });
-    });
 
-    // --- ПРОФИЛЬ И ДИЗАЙН ---
-    function saveProfile() {
-        user.nick = document.getElementById('eNick').value || user.nick;
-        user.av = document.getElementById('eAv').value || user.av;
-        if(document.getElementById('ePass').value === "BLEVDOZA2004") user.isAdmin = true;
-        localStorage.setItem('blv_u', JSON.stringify(user));
-        location.reload();
-    }
+        // --- ЛЕНТА ПОСТОВ ---
+        function createPost() {
+            const t = document.getElementById('postText').value;
+            if(!t.trim()) return;
+            db.ref('posts').push({ n: user.nick, a: user.av, t: t, time: Date.now() });
+            document.getElementById('postText').value = '';
+        }
 
-    function applyDesign() {
-        user.theme.c = document.getElementById('cColor').value;
-        user.theme.r = document.getElementById('cRadius').value + 'px';
-        user.theme.f = document.getElementById('cFont').value + 'px';
-        user.theme.b = document.getElementById('cBg').value;
-        const root = document.documentElement.style;
-        root.setProperty('--primary', user.theme.c);
-        root.setProperty('--radius', user.theme.r);
-        root.setProperty('--font', user.theme.f);
-        root.setProperty('--bg-img', user.theme.b ? `url(${user.theme.b})` : 'none');
-        localStorage.setItem('blv_u', JSON.stringify(user));
-    }
+        db.ref('posts').on('value', (s) => {
+            const cont = document.getElementById('feedContainer');
+            cont.innerHTML = '';
+            const data = s.val();
+            if(data) Object.values(data).reverse().forEach(p => {
+                cont.innerHTML += `
+                    <div class="card">
+                        <div style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
+                            <img src="${p.a}" class="avatar">
+                            <div><b>${p.n}</b><br><small style="opacity:0.5">Только что</small></div>
+                        </div>
+                        <div style="line-height:1.6">${p.t}</div>
+                    </div>`;
+            });
+        });
 
-    function resetDesign() { localStorage.clear(); location.reload(); }
+        // --- ПОИСК ЛЮДЕЙ ---
+        function searchUsers() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const results = document.getElementById('userResults');
+            results.innerHTML = '';
+            db.ref('users').limitToFirst(10).once('value', (s) => {
+                const users = s.val();
+                if(users) Object.values(users).forEach(u => {
+                    if(u.nick.toLowerCase().includes(query)) {
+                        results.innerHTML += `
+                            <div class="search-item" onclick="switchTab('chats')">
+                                <img src="${u.av}" class="avatar" style="width:35px;height:35px">
+                                <b>${u.nick}</b> <small style="color:green">Online</small>
+                            </div>`;
+                    }
+                });
+            });
+        }
 
-    function sendAdmin() {
-        const t = document.getElementById('adminMsg').value;
-        if(t) db.ref('messages').push({ n: '🕶️ Blevdoza', a: 'https://flaticon.com', t: t });
-        document.getElementById('adminMsg').value = '';
-    }
-    function clearChat() { if(confirm("Очистить историю?")) db.ref('messages').remove(); }
+        // --- ДИЗАЙН И ПРОФИЛЬ ---
+        function updateDesign() {
+            user.theme.c = document.getElementById('vColor').value;
+            user.theme.r = document.getElementById('vRadius').value + 'px';
+            user.theme.f = '16px';
+            user.theme.bl = document.getElementById('vBlur').value + 'px';
+            user.theme.b = document.getElementById('vBg').value;
+            applyTheme();
+            localStorage.setItem('blv_u', JSON.stringify(user));
+        }
 
-    window.onload = () => {
-        document.getElementById('pAv').src = user.av;
-        document.getElementById('pNick').innerText = user.nick;
-        if(user.isAdmin) document.getElementById('adminTabBtn').style.display = 'flex';
-        document.getElementById('cColor').value = user.theme.c;
-        document.getElementById('cRadius').value = parseInt(user.theme.r);
-        document.getElementById('cFont').value = parseInt(user.theme.f);
-        document.getElementById('cBg').value = user.theme.b;
-        applyDesign();
-    };
-</script>
+        function applyTheme() {
+            const r = document.documentElement.style;
+            r.setProperty('--primary', user.theme.c);
+            r.setProperty('--radius', user.theme.r);
+            r.setProperty('--blur', user.theme.bl);
+            r.setProperty('--bg', user.theme.b ? `url(${user.theme.b})` : '#f0f2f5');
+        }
+
+        function saveProfile() {
+            user.nick = document.getElementById('eNick').value || user.nick;
+            user.av = document.getElementById('eAv').value || user.av;
+            if(document.getElementById('ePass').value === "BLEVDOZA2004") user.isAdmin = true;
+            
+            // Регистрируем пользователя в глобальной базе для поиска
+            db.ref('users/' + user.nick).set({ nick: user.nick, av: user.av });
+            
+            localStorage.setItem('blv_u', JSON.stringify(user));
+            location.reload();
+        }
+
+        function resetDesign() { localStorage.clear(); location.reload(); }
+
+        // --- АДМИН ---
+        function clearAllPosts() { if(confirm("Удалить всё?")) db.ref('posts').remove(); }
+        function sendGlobalAlert() {
+            const t = document.getElementById('adminAlert').value;
+            if(t) db.ref('global_chat').push({ n: '📢 СИСТЕМА', t: t, time: Date.now() });
+            document.getElementById('adminAlert').value = '';
+        }
+
+        window.onload = () => {
+            document.getElementById('pNick').innerText = user.nick;
+            document.getElementById('pAv').src = user.av;
+            if(user.isAdmin) document.getElementById('adminTabBtn').style.display = 'flex';
+            
+            // Загружаем настройки в ползунки
+            document.getElementById('vColor').value = user.theme.c;
+            document.getElementById('vRadius').value = parseInt(user.theme.r);
+            document.getElementById('vBlur').value = parseInt(user.theme.bl);
+            document.getElementById('vBg').value = user.theme.b;
+            applyTheme();
+        };
+    </script>
 </body>
 </html>
