@@ -3,242 +3,217 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BLVgramm Ultra Online</title>
-    
-    <!-- Подключение Firebase -->
-    <script src="https://gstatic.com"></script>
-    <script src="https://gstatic.com"></script>
-
+    <title>BLVgramm Pro</title>
     <style>
-        :root {
-            --primary: #28a745;
-            --bg: #f0f2f5;
-            --card: #ffffff;
-            --text: #1c1e21;
-        }
-
-        body { 
-            font-family: 'Segoe UI', Tahoma, sans-serif; 
-            margin: 0; display: flex; height: 100vh; 
-            background: var(--bg); color: var(--text); overflow: hidden;
-        }
-
-        /* Навигация */
-        .sidebar { 
-            width: 260px; background: var(--card); border-right: 1px solid #ddd; 
-            padding: 20px; display: flex; flex-direction: column; 
-        }
-        .logo { font-size: 26px; font-weight: 900; color: var(--primary); margin-bottom: 25px; text-align: center; }
-        .nav-btn { 
-            padding: 12px; margin: 5px 0; cursor: pointer; border-radius: 12px; 
-            border: none; background: none; font-weight: 600; text-align: left; transition: 0.2s;
-        }
-        .nav-btn:hover { background: #f0f0f0; }
-        .nav-btn.active { background: var(--primary); color: white; }
-
-        /* Контент */
-        .main-content { flex: 1; padding: 25px; overflow-y: auto; display: flex; justify-content: center; }
-        .tab-content { display: none; width: 100%; max-width: 650px; }
-        .tab-content.active { display: block; animation: fadeIn 0.3s; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* Элементы */
-        .card { background: white; padding: 20px; border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .avatar { width: 100px; height: 100px; border-radius: 50%; object-fit: cover; border: 3px solid var(--primary); margin-bottom: 10px; background: #eee; }
+        :root { --primary: #0084ff; --bg: #f0f2f5; --card: #ffffff; --text: #1c1e21; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; height: 100vh; background: var(--bg); overflow: hidden; }
         
-        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 10px; box-sizing: border-box; font-size: 16px; outline: none; }
-        input:focus { border-color: var(--primary); }
+        /* Sidebar */
+        .sidebar { width: 280px; background: var(--card); border-right: 1px solid #ddd; padding: 20px; display: flex; flex-direction: column; }
+        .logo { font-size: 24px; font-weight: 900; color: var(--primary); margin-bottom: 20px; cursor: default; }
+        .nav-btn { padding: 12px; margin: 4px 0; cursor: pointer; border-radius: 10px; border: none; background: none; text-align: left; font-weight: 600; transition: 0.2s; }
+        .nav-btn:hover { background: #f0f2f5; }
+        .nav-btn.active { background: #e7f3ff; color: var(--primary); }
 
-        .btn-main { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 12px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; }
-        .btn-main:active { transform: scale(0.98); }
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; background: white; }
+        .tab-content { display: none; height: 100%; overflow-y: auto; padding: 20px; box-sizing: border-box; }
+        .tab-content.active { display: flex; flex-direction: column; }
 
         /* Чат */
-        .chat-area { height: 400px; overflow-y: auto; background: #f8f9fa; padding: 15px; border-radius: 15px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px; border: 1px solid #eee; }
-        .msg { padding: 10px 15px; border-radius: 15px; max-width: 80%; line-height: 1.4; position: relative; }
-        .msg.mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 2px; }
-        .msg.other { align-self: flex-start; background: white; border: 1px solid #ddd; border-bottom-left-radius: 2px; }
+        .chat-container { display: flex; flex-direction: column; height: 100%; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
+        .msg { padding: 10px 14px; border-radius: 18px; max-width: 70%; font-size: 15px; line-height: 1.4; position: relative; }
+        .msg.mine { align-self: flex-end; background: var(--primary); color: white; border-bottom-right-radius: 4px; }
+        .msg.other { align-self: flex-start; background: #e4e6eb; color: black; border-bottom-left-radius: 4px; }
+        
+        /* Поиск и списки */
+        .user-card { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 10px; cursor: pointer; transition: 0.2s; border: 1px solid #eee; margin-bottom: 8px; }
+        .user-card:hover { background: #f8f9fa; border-color: var(--primary); }
+        .avatar-sm { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; background: #eee; }
 
-        #adminTag { display: none; background: #6f42c1; color: white; margin-top: auto; }
+        .input-group { display: flex; gap: 10px; padding: 15px; border-top: 1px solid #eee; }
+        input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; font-size: 15px; }
+        .btn-send { background: var(--primary); color: white; border: none; padding: 0 20px; border-radius: 20px; cursor: pointer; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- Меню -->
     <div class="sidebar">
-        <div class="logo">BLVgramm</div>
-        <button class="nav-btn active" id="btn-feed" onclick="showTab('feed')">🏠 Лента</button>
-        <button class="nav-btn" id="btn-chat" onclick="showTab('chat')">💬 Общий чат</button>
-        <button class="nav-btn" id="btn-prof" onclick="showTab('prof')">👤 Мой профиль</button>
-        <button class="nav-btn" id="adminTag" onclick="showTab('admin')">👑 Админка</button>
+        <div class="logo">BLVgramm Pro</div>
+        <button class="nav-btn active" onclick="showTab('feed')">🏠 Лента</button>
+        <button class="nav-btn" onclick="showTab('users')">🔍 Поиск людей</button>
+        <button class="nav-btn" id="btn-chat-tab" onclick="showTab('chat')" style="display:none;">💬 Чат: <span id="currentChatName">...</span></button>
+        <button class="nav-btn" onclick="showTab('prof')">👤 Профиль</button>
+        <div style="margin-top:auto; font-size: 12px; color: #888;">Твой ID: <span id="myIdDisplay">...</span></div>
     </div>
 
-    <!-- Основная часть -->
     <div class="main-content">
-        
-        <!-- ВКЛАДКА: ЛЕНТА -->
+        <!-- ЛЕНТА -->
         <div id="tab-feed" class="tab-content active">
-            <div class="card">
+            <div style="max-width: 600px; margin: 0 auto; width: 100%;">
                 <textarea id="postInput" placeholder="Что нового?"></textarea>
-                <button class="btn-main" onclick="publishPost()">Опубликовать</button>
+                <button class="btn-send" id="publishBtn" style="height:45px; width:100%; margin-bottom:20px;">Опубликовать</button>
+                <div id="feedList"></div>
             </div>
-            <div id="feedList"></div>
         </div>
 
-        <!-- ВКЛАДКА: ЧАТ -->
+        <!-- ПОИСК ЛЮДЕЙ -->
+        <div id="tab-users" class="tab-content">
+            <input type="text" id="searchPeople" placeholder="Поиск по нику..." style="margin-bottom: 20px;">
+            <div id="usersList"></div>
+        </div>
+
+        <!-- ЛИЧНЫЙ ЧАТ -->
         <div id="tab-chat" class="tab-content">
-            <div class="card">
-                <div class="chat-area" id="chatArea"></div>
-                <div style="display:flex; gap:8px;">
-                    <input type="text" id="chatInput" placeholder="Напишите сообщение..." onkeypress="if(event.key==='Enter') sendMessage()">
-                    <button onclick="sendMessage()" style="width:60px; background:var(--primary); color:white; border:none; border-radius:12px; cursor:pointer;">➤</button>
+            <div class="chat-container">
+                <div class="chat-messages" id="chatArea"></div>
+                <div class="input-group">
+                    <input type="text" id="chatInput" placeholder="Напишите сообщение...">
+                    <button class="btn-send" id="sendBtn">Отправить</button>
                 </div>
             </div>
         </div>
 
-        <!-- ВКЛАДКА: ПРОФИЛЬ -->
+        <!-- ПРОФИЛЬ -->
         <div id="tab-prof" class="tab-content">
-            <div class="card" style="text-align:center;">
-                <img id="pPreview" src="https://flaticon.com" class="avatar">
-                <h2 id="pNameDisplay">Аноним</h2>
-                <hr style="opacity:0.2; margin: 20px 0;">
+            <div style="max-width: 400px; margin: 0 auto; text-align: center;">
+                <img id="pPreview" src="" class="avatar-sm" style="width:100px; height:100px;">
+                <h2 id="pNameDisplay">Загрузка...</h2>
                 <input type="text" id="pNickInput" placeholder="Изменить ник">
-                <input type="text" id="pAvInput" placeholder="Ссылка на фото аватарки">
-                <input type="password" id="pAdminCode" placeholder="Код BLEVDOZA">
-                <button class="btn-main" onclick="updateProfile()">Сохранить изменения</button>
+                <input type="text" id="pAvInput" placeholder="URL аватарки">
+                <button class="btn-send" id="saveProfBtn" style="height:45px; width:100%; margin-top:10px;">Сохранить</button>
             </div>
         </div>
-
-        <!-- ВКЛАДКА: АДМИНКА -->
-        <div id="tab-admin" class="tab-content">
-            <div class="card" style="border: 2px solid #6f42c1;">
-                <h3 style="color:#6f42c1">Управление BLEVDOZA</h3>
-                <button class="btn-main" style="background:#dc3545; margin-bottom:10px;" onclick="clearFeed()">🗑️ Удалить все посты</button>
-                <textarea id="adminMsg" placeholder="Системное уведомление..."></textarea>
-                <button class="btn-main" style="background:#6f42c1;" onclick="sendGlobalMsg()">📢 Объявить всем</button>
-            </div>
-        </div>
-
     </div>
 
-    <script>
-        // --- 1. НАСТРОЙКИ FIREBASE ---
+    <script type="module">
+        import { initializeApp } from "https://gstatic.com";
+        import { getDatabase, ref, push, onChildAdded, set, onValue } from "https://gstatic.com";
+
         const firebaseConfig = {
-            apiKey: "AIzaSyC9ncz649ddqf5nwh-lsXXRqSVu9t2Dpmk",
-            databaseURL: "https://firebasedatabase.app"
-        };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-
-        // --- 2. ДАННЫЕ ПОЛЬЗОВАТЕЛЯ ---
-        let me = JSON.parse(localStorage.getItem('blv_final_v1')) || {
-            nick: 'User' + Math.floor(Math.random() * 9999),
-            av: 'https://flaticon.com',
-            isAdmin: false
+            apiKey: "AIzaSyC9ncz649ddqf5nwh-lsXXRq5Vu9t2Dpmk",
+            authDomain: "blvgramm.firebaseapp.com",
+            databaseURL: "https://firebasedatabase.app",
+            projectId: "blvgramm",
+            storageBucket: "blvgramm.firebasestorage.app",
+            appId: "1:441925060827:web:07585974cd7427db98e4fe"
         };
 
-        // --- 3. ЛОГИКА ПЕРЕКЛЮЧЕНИЯ ТАБОВ ---
-        function showTab(tabId) {
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // --- ЛОГИКА ПОЛЬЗОВАТЕЛЯ ---
+        let myId = localStorage.getItem('blv_id') || 'u' + Date.now();
+        localStorage.setItem('blv_id', myId);
+
+        let me = JSON.parse(localStorage.getItem('blv_user_v2')) || {
+            nick: 'User_' + Math.floor(Math.random()*999),
+            av: 'https://flaticon.com'
+        };
+
+        document.getElementById('myIdDisplay').innerText = myId;
+        document.getElementById('pNameDisplay').innerText = me.nick;
+        document.getElementById('pPreview').src = me.av;
+
+        // Регистрация в базе для поиска
+        function syncProfile() {
+            set(ref(db, 'users/' + myId), { nick: me.nick, av: me.av, id: myId });
+        }
+        syncProfile();
+
+        // --- УВЕДОМЛЕНИЯ ---
+        if (Notification.permission !== "granted") Notification.requestPermission();
+
+        function notify(title, body) {
+            if (Notification.permission === "granted") {
+                new Notification(title, { body: body, icon: me.av });
+            }
+        }
+
+        // --- НАВИГАЦИЯ ---
+        let currentChatPartner = null;
+
+        window.showTab = (id) => {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            
-            document.getElementById('tab-' + tabId).classList.add('active');
-            document.getElementById('btn-' + (tabId === 'chat' ? 'chat' : tabId === 'feed' ? 'feed' : tabId === 'prof' ? 'prof' : 'admin')).classList.add('active');
-        }
-
-        // --- 4. ПРОФИЛЬ ---
-        function updateProfile() {
-            const newNick = document.getElementById('pNickInput').value;
-            const newAv = document.getElementById('pAvInput').value;
-            const code = document.getElementById('pAdminCode').value;
-
-            if (newNick) me.nick = newNick;
-            if (newAv) me.av = newAv;
-            if (code === "BLEVDOZA2004") me.isAdmin = true;
-
-            localStorage.setItem('blv_final_v1', JSON.stringify(me));
-            alert("Профиль обновлен!");
-            location.reload(); // Перезагрузка для применения
-        }
-
-        // --- 5. ОНЛАЙН ЧАТ ---
-        function sendMessage() {
-            const inp = document.getElementById('chatInput');
-            const text = inp.value.trim();
-            if (!text) return;
-
-            db.ref('messages').push({
-                n: me.nick,
-                t: text,
-                time: Date.now()
-            });
-            inp.value = '';
-        }
-
-        db.ref('messages').limitToLast(50).on('child_added', (snap) => {
-            const m = snap.val();
-            const area = document.getElementById('chatArea');
-            const isMine = m.n === me.nick;
-            
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `msg ${isMine ? 'mine' : 'other'}`;
-            msgDiv.innerHTML = `<b>${m.n}</b><br>${m.t}`;
-            
-            area.appendChild(msgDiv);
-            area.scrollTop = area.scrollHeight;
-        });
-
-        // --- 6. ОНЛАЙН ЛЕНТА ---
-        function publishPost() {
-            const txt = document.getElementById('postInput').value.trim();
-            if (!txt) return;
-
-            db.ref('posts').push({
-                n: me.nick,
-                a: me.av,
-                t: txt,
-                time: Date.now()
-            });
-            document.getElementById('postInput').value = '';
-        }
-
-        db.ref('posts').on('value', (snap) => {
-            const list = document.getElementById('feedList');
-            list.innerHTML = '';
-            const data = snap.val();
-            if (data) {
-                Object.values(data).reverse().forEach(p => {
-                    list.innerHTML += `
-                        <div class="card" style="text-align:left;">
-                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
-                                <img src="${p.a}" style="width:40px; height:40px; border-radius:50%; object-fit:cover;">
-                                <b>${p.n}</b>
-                            </div>
-                            <div>${p.t}</div>
-                        </div>`;
-                });
-            }
-        });
-
-        // --- 7. АДМИНКА ---
-        function clearFeed() { if(confirm("Удалить все посты?")) db.ref('posts').remove(); }
-        function sendGlobalMsg() {
-            const t = document.getElementById('adminMsg').value;
-            if(t) db.ref('messages').push({ n: '📢 СИСТЕМА', t: t });
-            document.getElementById('adminMsg').value = '';
-        }
-
-        // --- ПРИ ЗАГРУЗКЕ ---
-        window.onload = () => {
-            document.getElementById('pNameDisplay').innerText = me.nick;
-            document.getElementById('pPreview').src = me.av;
-            document.getElementById('pNickInput').value = me.nick;
-            document.getElementById('pAvInput').value = me.av;
-            
-            if (me.isAdmin) {
-                document.getElementById('adminTag').style.display = 'block';
-            }
+            document.getElementById('tab-' + id).classList.add('active');
+            if (id === 'chat') document.getElementById('btn-chat-tab').classList.add('active');
         };
+
+        // --- ПОИСК ЛЮДЕЙ ---
+        onValue(ref(db, 'users'), (snap) => {
+            const list = document.getElementById('usersList');
+            list.innerHTML = '';
+            snap.forEach(child => {
+                const user = child.val();
+                if (user.id === myId) return;
+                const div = document.createElement('div');
+                div.className = 'user-card';
+                div.innerHTML = `<img src="${user.av}" class="avatar-sm"> <strong>${user.nick}</strong>`;
+                div.onclick = () => startChat(user);
+                list.appendChild(div);
+            });
+        });
+
+        // --- ЛИЧНЫЕ ЧАТЫ ---
+        function startChat(user) {
+            currentChatPartner = user;
+            document.getElementById('currentChatName').innerText = user.nick;
+            document.getElementById('btn-chat-tab').style.display = 'block';
+            document.getElementById('chatArea').innerHTML = '';
+            
+            showTab('chat');
+            
+            // Загрузка истории (ID чата = сумма ID двух людей по алфавиту)
+            const chatId = [myId, user.id].sort().join('_');
+            onChildAdded(ref(db, 'direct_messages/' + chatId), (s) => {
+                const m = s.val();
+                drawMessage(m);
+                if (m.from !== myId) notify("Новое сообщение от " + user.nick, m.t);
+            });
+        }
+
+        function drawMessage(m) {
+            const div = document.createElement('div');
+            div.className = `msg ${m.from === myId ? 'mine' : 'other'}`;
+            div.innerText = m.t;
+            document.getElementById('chatArea').appendChild(div);
+            document.getElementById('chatArea').scrollTop = 10000;
+        }
+
+        document.getElementById('sendBtn').onclick = () => {
+            const inp = document.getElementById('chatInput');
+            if (!inp.value.trim() || !currentChatPartner) return;
+            const chatId = [myId, currentChatPartner.id].sort().join('_');
+            push(ref(db, 'direct_messages/' + chatId), { from: myId, t: inp.value, time: Date.now() });
+            inp.value = '';
+        };
+
+        // --- ПРОФИЛЬ И ЛЕНТА ---
+        document.getElementById('saveProfBtn').onclick = () => {
+            const n = document.getElementById('pNickInput').value;
+            const a = document.getElementById('pAvInput').value;
+            if(n) me.nick = n; if(a) me.av = a;
+            localStorage.setItem('blv_user_v2', JSON.stringify(me));
+            syncProfile();
+            location.reload();
+        };
+
+        document.getElementById('publishBtn').onclick = () => {
+            const txt = document.getElementById('postInput').value;
+            if(!txt.trim()) return;
+            push(ref(db, 'posts'), { n: me.nick, av: me.av, t: txt });
+            document.getElementById('postInput').value = '';
+        };
+
+        onChildAdded(ref(db, 'posts'), (s) => {
+            const p = s.val();
+            const html = `<div style="background:white; padding:15px; border-radius:15px; border:1px solid #ddd; margin-bottom:15px;">
+                <div style="display:flex;align-items:center;gap:10px;"><img src="${p.av}" class="avatar-sm"><strong>${p.n}</strong></div>
+                <p>${p.t}</p></div>`;
+            document.getElementById('feedList').insertAdjacentHTML('afterbegin', html);
+        });
     </script>
 </body>
 </html>
